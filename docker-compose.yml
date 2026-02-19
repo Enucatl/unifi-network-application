@@ -1,6 +1,6 @@
 services:
   unifi-network-application:
-    image: lscr.io/linuxserver/unifi-network-application:9.5.21
+    image: lscr.io/linuxserver/unifi-network-application:latest
     environment:
       - PUID=1000
       - PGID=1000
@@ -29,6 +29,7 @@ services:
 
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=traefik_proxy"
       - "traefik.http.routers.unifi.entrypoints=https"
       - "traefik.http.routers.unifi.rule=Host(`unifi.${DOCKER_DOMAIN}`)"
       - "traefik.http.routers.unifi.tls=true"
