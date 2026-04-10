@@ -1,6 +1,13 @@
 services:
   unifi-network-application:
+    extends:
+      file: ../compose-security-baseline/hardening.yml
+      service: limits-xlarge
     image: lscr.io/linuxserver/unifi-network-application:latest
+    cpu_shares: 1024
+    # Device discovery/adoption traffic is capability-sensitive; restrict after a Unifi smoke test.
+    security_opt:
+      - no-new-privileges:true
     environment:
       - PUID=1000
       - PGID=1000
@@ -41,7 +48,11 @@ services:
       - traefik_proxy 
 
   unifi-db:
+    extends:
+      file: ../compose-security-baseline/hardening.yml
+      service: mongo
     image: docker.io/mongo:8
+    cpu_shares: 1024
     environment:
       - MONGO_INITDB_ROOT_USERNAME
       - MONGO_INITDB_ROOT_PASSWORD
@@ -61,6 +72,7 @@ networks:
   traefik_proxy:
     external: true
   default:
+    internal: true
 
 volumes:
   unifi-db-data:
