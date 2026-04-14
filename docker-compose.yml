@@ -2,12 +2,16 @@ services:
   unifi-network-application:
     extends:
       file: ../compose-security-baseline/hardening.yml
-      service: limits-xlarge
+      service: hardened-xlarge
+    cap_add:
+      - SETUID
+      - SETGID
+    read_only: false
     image: lscr.io/linuxserver/unifi-network-application:latest
+    tmpfs: !reset
+      - /tmp:rw,noexec,nosuid,size=32m
+      - /run:rw,nosuid,size=32m # 'noexec' removed. Size bumped slightly as s6 can be hungry.
     cpu_shares: 1024
-    # Device discovery/adoption traffic is capability-sensitive; restrict after a Unifi smoke test.
-    security_opt:
-      - no-new-privileges:true
     environment:
       - PUID=1000
       - PGID=1000
@@ -32,7 +36,6 @@ services:
       - 8880:8880 #optional
       - 6789:6789 #optional
       - 5514:5514/udp #optional
-    restart: unless-stopped
 
     labels:
       - "traefik.enable=true"
@@ -50,8 +53,9 @@ services:
   unifi-db:
     extends:
       file: ../compose-security-baseline/hardening.yml
-      service: mongo
-    image: docker.io/mongo:8
+      service: hardened-medium
+    image: mongo:8
+    user: 999:999
     cpu_shares: 1024
     environment:
       - MONGO_INITDB_ROOT_USERNAME
@@ -63,7 +67,6 @@ services:
     volumes:
       - unifi-db-data:/data/db
       - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
-    restart: unless-stopped
     networks:
       - default
 
