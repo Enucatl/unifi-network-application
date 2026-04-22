@@ -8,9 +8,9 @@ services:
       - SETGID
     read_only: false
     image: lscr.io/linuxserver/unifi-network-application:latest
-    tmpfs: !reset
+    tmpfs:
       - /tmp:rw,noexec,nosuid,size=32m
-      - /run:rw,nosuid,size=32m # 'noexec' removed. Size bumped slightly as s6 can be hungry.
+      - /run:rw,exec,nosuid,size=32m # s6 needs /run to be executable.
     cpu_shares: 1024
     environment:
       - PUID=1000
