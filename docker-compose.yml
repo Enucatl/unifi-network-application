@@ -61,7 +61,7 @@ services:
       - 11084:11084
     labels:
       - traefik.enable=true
-      - traefik.docker.network=traefik_proxy
+      - traefik.docker.network=unifi-network-application_traefik
       - traefik.http.routers.unifi.entrypoints=https
       - traefik.http.routers.unifi.rule=Host(`unifi.${DOCKER_DOMAIN}`)
       - traefik.http.routers.unifi.tls=true
@@ -69,13 +69,14 @@ services:
       - traefik.http.services.unifi.loadbalancer.server.port=443
       - traefik.http.services.unifi.loadbalancer.serversTransport=unifi@file
     networks:
-      - traefik_proxy
+      - unifi-network-application_traefik
     sysctls:
       net.ipv4.ip_unprivileged_port_start: 443
 
 networks:
-  traefik_proxy:
-    external: true
+  unifi-network-application_traefik:
+    name: unifi-network-application_traefik
+    enable_ipv6: true
 
 volumes:
   uosserver-persistent:
