@@ -26,7 +26,7 @@ services:
         exec /usr/local/bin/entrypoint.sh
     environment:
       TZ: Europe/Zurich
-      UOS_SYSTEM_IP: ${UOS_SYSTEM_IP:-10.0.0.128}
+      UOS_SYSTEM_IP: ${UOS_SYSTEM_IP:-atlas.home.arpa}
     volumes:
       - uosserver-persistent:/persistent
       - uosserver-data:/data
